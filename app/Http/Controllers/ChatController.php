@@ -42,7 +42,7 @@ class ChatController extends Controller
     private function mensagensDoGrupo(Grupo $grupo)
     {
         return $grupo->mensagens()
-            ->with('user:id,name,tipo_usuario')
+            ->with('user:id,name,tipo_usuario,avatar_emoji')
             ->oldest()
             ->get();
     }

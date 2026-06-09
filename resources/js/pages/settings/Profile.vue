@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { Form, Head, usePage } from '@inertiajs/vue3';
 import { Link } from '@inertiajs/vue3';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import ProfileController from '@/actions/App/Http/Controllers/Settings/ProfileController';
 import DeleteUser from '@/components/DeleteUser.vue';
+import EmojiPicker from '@/components/EmojiPicker.vue';
 import Heading from '@/components/Heading.vue';
 import InputError from '@/components/InputError.vue';
 import { Button } from '@/components/ui/button';
@@ -25,6 +26,7 @@ defineOptions({
 
 const page = usePage();
 const user = computed(() => page.props.auth.user);
+const avatarEmoji = ref(user.value.avatar_emoji ?? '🙂');
 </script>
 
 <template>
@@ -71,6 +73,16 @@ const user = computed(() => page.props.auth.user);
                     placeholder="Email address"
                 />
                 <InputError class="mt-2" :message="errors.email" />
+            </div>
+
+            <div class="grid gap-2">
+                <Label>Emoji de perfil</Label>
+                <EmojiPicker
+                    v-model="avatarEmoji"
+                    name="avatar_emoji"
+                    :disabled="processing"
+                />
+                <InputError class="mt-2" :message="errors.avatar_emoji" />
             </div>
 
             <div v-if="page.props.mustVerifyEmail && !user.email_verified_at">

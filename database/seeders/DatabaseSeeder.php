@@ -22,14 +22,15 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Administrador',
                 'password' => 'password',
                 'tipo_usuario' => 'admin',
+                'avatar_emoji' => '🧑‍💻',
                 'email_verified_at' => now(),
             ],
         );
 
         $alunos = collect([
-            ['name' => 'Ana Aluna', 'email' => 'ana@example.com'],
-            ['name' => 'Bruno Aluno', 'email' => 'bruno@example.com'],
-            ['name' => 'Carla Aluna', 'email' => 'carla@example.com'],
+            ['name' => 'Ana Aluna', 'email' => 'ana@example.com', 'avatar_emoji' => '👩‍🎓'],
+            ['name' => 'Bruno Aluno', 'email' => 'bruno@example.com', 'avatar_emoji' => '😎'],
+            ['name' => 'Carla Aluna', 'email' => 'carla@example.com', 'avatar_emoji' => '🚀'],
         ])->map(fn (array $data) => User::query()->updateOrCreate(
             ['email' => $data['email']],
             [

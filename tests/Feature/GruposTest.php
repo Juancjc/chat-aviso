@@ -98,10 +98,41 @@ test('somente o admin criador pode adicionar alunos', function () {
         ->assertSessionHasErrors('user_id');
 });
 
+test('somente o admin criador pode remover aluno do grupo', function () {
+    $admin = User::factory()->admin()->create();
+    $outroAdmin = User::factory()->admin()->create();
+    $aluno = User::factory()->aluno()->create();
+    $grupo = $admin->gruposCriados()->create(['nome' => 'Grupo']);
+    $grupo->participantes()->attach($aluno, ['status' => 'ativo']);
+
+    $this->actingAs($outroAdmin)
+        ->delete(route('grupos.participantes.destroy', [$grupo, $aluno]))
+        ->assertForbidden();
+
+    $this->actingAs($aluno)
+        ->delete(route('grupos.participantes.destroy', [$grupo, $aluno]))
+        ->assertForbidden();
+
+    $this->actingAs($admin)
+        ->delete(route('grupos.participantes.destroy', [$grupo, $aluno]))
+        ->assertRedirect();
+
+    expect($grupo->participantes()->whereKey($aluno->id)->exists())->toBeFalse();
+
+    $this->actingAs($aluno)
+        ->get(route('grupos.chat', $grupo))
+        ->assertForbidden();
+});
+
 test('admin criador pode gerar link temporário e um novo link revoga o anterior', function () {
     $admin = User::factory()->admin()->create();
     $outroAdmin = User::factory()->admin()->create();
+    $aluno = User::factory()->aluno()->create();
     $grupo = $admin->gruposCriados()->create(['nome' => 'Grupo']);
+
+    $this->actingAs($aluno)
+        ->post(route('grupos.convites.store', $grupo), ['duracao_horas' => 24])
+        ->assertForbidden();
 
     $this->actingAs($outroAdmin)
         ->post(route('grupos.convites.store', $grupo), ['duracao_horas' => 24])

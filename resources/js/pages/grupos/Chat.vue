@@ -22,6 +22,7 @@ type Mensagem = {
         id: number;
         name: string;
         tipo_usuario: 'admin' | 'aluno';
+        avatar_emoji: string;
     };
 };
 
@@ -191,7 +192,7 @@ onBeforeUnmount(() => {
                                     class="mb-1 flex items-center gap-2 text-xs"
                                 >
                                     <span class="font-semibold">{{
-                                        mensagem.user.name
+                                        `${mensagem.user.avatar_emoji || '🙂'} ${mensagem.user.name}`
                                     }}</span>
                                     <span
                                         :class="

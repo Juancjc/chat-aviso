@@ -1,0 +1,96 @@
+<script setup lang="ts">
+import ptBR from 'emoji-picker-element/i18n/pt_BR';
+import Picker from 'emoji-picker-element/picker';
+import type { EmojiClickEvent } from 'emoji-picker-element/shared';
+import Button from 'primevue/button';
+import Popover from 'primevue/popover';
+import { nextTick, onBeforeUnmount, ref } from 'vue';
+
+const model = defineModel<string>({ default: '🙂' });
+
+defineProps<{
+    name: string;
+    disabled?: boolean;
+}>();
+
+const pickerHost = ref<HTMLElement | null>(null);
+const popover = ref<{
+    hide: () => void;
+    toggle: (event: Event) => void;
+} | null>(null);
+let picker: Picker | null = null;
+
+const escolherEmoji = (event: EmojiClickEvent) => {
+    if (!event.detail.unicode) {
+        return;
+    }
+
+    model.value = event.detail.unicode;
+    popover.value?.hide();
+};
+
+const montarSeletor = async () => {
+    await nextTick();
+
+    if (!picker) {
+        picker = new Picker({
+            i18n: ptBR,
+            locale: 'pt',
+        });
+        picker.style.width = 'min(22rem, calc(100vw - 3rem))';
+        picker.style.height = '24rem';
+        picker.style.setProperty('--border-radius', '0.75rem');
+        picker.style.setProperty('--emoji-size', '1.5rem');
+        picker.addEventListener('emoji-click', escolherEmoji);
+    }
+
+    if (pickerHost.value && picker.parentElement !== pickerHost.value) {
+        pickerHost.value.appendChild(picker);
+    }
+};
+
+const abrirSeletor = async (event: Event) => {
+    popover.value?.toggle(event);
+    await montarSeletor();
+};
+
+onBeforeUnmount(() => {
+    picker?.removeEventListener('emoji-click', escolherEmoji);
+    picker?.remove();
+});
+</script>
+
+<template>
+    <input type="hidden" :name="name" :value="model" />
+    <div class="rounded-2xl border border-border bg-muted/30 p-3">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+                <span
+                    class="flex size-14 items-center justify-center rounded-full border border-border bg-background text-3xl shadow-sm"
+                >
+                    {{ model }}
+                </span>
+                <div>
+                    <p class="text-sm font-medium">Seu emoji de perfil</p>
+                    <p class="text-xs text-muted-foreground">
+                        Todos os emojis, com busca e tons de pele.
+                    </p>
+                </div>
+            </div>
+
+            <Button
+                type="button"
+                label="Escolher emoji"
+                severity="secondary"
+                outlined
+                :disabled="disabled"
+                aria-label="Abrir seletor completo de emojis"
+                @click="abrirSeletor"
+            />
+        </div>
+
+        <Popover ref="popover">
+            <div ref="pickerHost" />
+        </Popover>
+    </div>
+</template>

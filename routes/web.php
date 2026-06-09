@@ -22,6 +22,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('grupos/{grupo}/participantes', [GrupoParticipanteController::class, 'index'])->name('grupos.participantes');
     Route::post('grupos/{grupo}/participantes', [GrupoParticipanteController::class, 'store'])->name('grupos.participantes.store');
+    Route::delete('grupos/{grupo}/participantes/{participante}', [GrupoParticipanteController::class, 'destroy'])->name('grupos.participantes.destroy');
     Route::post('grupos/{grupo}/convites', [GrupoConviteController::class, 'store'])->name('grupos.convites.store');
     Route::delete('grupos/{grupo}/convites/{convite}', [GrupoConviteController::class, 'destroy'])->name('grupos.convites.destroy');
 

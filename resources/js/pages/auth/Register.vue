@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { Form, Head } from '@inertiajs/vue3';
+import { ref } from 'vue';
+import EmojiPicker from '@/components/EmojiPicker.vue';
 import InputError from '@/components/InputError.vue';
 import PasswordInput from '@/components/PasswordInput.vue';
 import TextLink from '@/components/TextLink.vue';
@@ -20,6 +22,8 @@ defineOptions({
         description: 'Enter your details below to create your account',
     },
 });
+
+const avatarEmoji = ref('🙂');
 </script>
 
 <template>
@@ -59,6 +63,16 @@ defineOptions({
                     placeholder="email@example.com"
                 />
                 <InputError :message="errors.email" />
+            </div>
+
+            <div class="grid gap-2">
+                <Label>Emoji de perfil</Label>
+                <EmojiPicker
+                    v-model="avatarEmoji"
+                    name="avatar_emoji"
+                    :disabled="processing"
+                />
+                <InputError :message="errors.avatar_emoji" />
             </div>
 
             <div class="grid gap-2">

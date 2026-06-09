@@ -3,6 +3,7 @@ export type User = {
     name: string;
     email: string;
     tipo_usuario: 'admin' | 'aluno';
+    avatar_emoji: string;
     avatar?: string;
     email_verified_at: string | null;
     two_factor_enabled?: boolean;

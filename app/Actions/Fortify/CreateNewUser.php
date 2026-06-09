@@ -5,6 +5,7 @@ namespace App\Actions\Fortify;
 use App\Concerns\PasswordValidationRules;
 use App\Concerns\ProfileValidationRules;
 use App\Models\User;
+use App\Support\ProfileEmojis;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
 
@@ -29,6 +30,7 @@ class CreateNewUser implements CreatesNewUsers
             'email' => $input['email'],
             'password' => $input['password'],
             'tipo_usuario' => 'aluno',
+            'avatar_emoji' => $input['avatar_emoji'] ?? ProfileEmojis::DEFAULT,
         ]);
     }
 }

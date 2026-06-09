@@ -26,7 +26,7 @@ class GrupoParticipanteController extends Controller
                 'expires_at' => $conviteAtivo->expires_at,
             ] : null,
             'participantes' => $grupo->participantes()
-                ->select('users.id', 'users.name', 'users.email')
+                ->select('users.id', 'users.name', 'users.email', 'users.avatar_emoji')
                 ->orderBy('users.name')
                 ->get(),
             'alunosDisponiveis' => User::query()
@@ -43,6 +43,22 @@ class GrupoParticipanteController extends Controller
         $grupo->participantes()->attach($request->validated('user_id'), ['status' => 'ativo']);
 
         Inertia::flash('toast', ['type' => 'success', 'message' => 'Aluno adicionado ao grupo.']);
+
+        return back();
+    }
+
+    public function destroy(Grupo $grupo, User $participante): RedirectResponse
+    {
+        Gate::authorize('manageParticipants', $grupo);
+        abort_unless(
+            $participante->tipo_usuario === 'aluno'
+            && $grupo->participantes()->whereKey($participante->id)->exists(),
+            404,
+        );
+
+        $grupo->participantes()->detach($participante->id);
+
+        Inertia::flash('toast', ['type' => 'success', 'message' => 'Aluno removido do grupo.']);
 
         return back();
     }

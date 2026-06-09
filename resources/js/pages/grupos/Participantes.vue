@@ -6,9 +6,11 @@ import {
     Clipboard,
     Link,
     Link2Off,
+    Trash2,
     UserRoundPlus,
     Users,
 } from '@lucide/vue';
+import Avatar from 'primevue/avatar';
 import Button from 'primevue/button';
 import Card from 'primevue/card';
 import Column from 'primevue/column';
@@ -23,6 +25,7 @@ type Aluno = {
     id: number;
     name: string;
     email: string;
+    avatar_emoji: string;
     pivot?: { status: 'convidado' | 'ativo' };
 };
 
@@ -82,6 +85,16 @@ const revogarConvite = () => {
         `/grupos/${props.grupo.id}/convites/${props.conviteAtivo.token}`,
         { preserveScroll: true },
     );
+};
+
+const removerParticipante = (aluno: Aluno) => {
+    if (!window.confirm(`Remover ${aluno.name} deste grupo?`)) {
+        return;
+    }
+
+    router.delete(`/grupos/${props.grupo.id}/participantes/${aluno.id}`, {
+        preserveScroll: true,
+    });
 };
 
 const formatarExpiracao = (date: string) =>
@@ -250,8 +263,37 @@ const formatarExpiracao = (date: string) =>
                         responsive-layout="scroll"
                         class="mt-3"
                     >
-                        <Column field="name" header="Nome" />
+                        <Column header="Aluno">
+                            <template #body="{ data }">
+                                <div class="flex items-center gap-3">
+                                    <Avatar
+                                        :label="data.avatar_emoji || '🙂'"
+                                        shape="circle"
+                                        class="bg-muted text-lg"
+                                    />
+                                    <span class="font-medium">{{
+                                        data.name
+                                    }}</span>
+                                </div>
+                            </template>
+                        </Column>
                         <Column field="email" header="E-mail" />
+                        <Column header="Ações" class="w-20 text-right">
+                            <template #body="{ data }">
+                                <Button
+                                    v-tooltip.top="'Remover do grupo'"
+                                    severity="danger"
+                                    text
+                                    rounded
+                                    :aria-label="`Remover ${data.name}`"
+                                    @click="removerParticipante(data)"
+                                >
+                                    <template #icon
+                                        ><Trash2 class="size-4"
+                                    /></template>
+                                </Button>
+                            </template>
+                        </Column>
                         <template #empty>
                             <div class="py-8 text-center text-muted-foreground">
                                 Nenhum aluno foi adicionado ainda.
