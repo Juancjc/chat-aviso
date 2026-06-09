@@ -61,6 +61,7 @@ RUN cp .env.example .env \
     && php artisan key:generate --force \
     && composer dump-autoload --classmap-authoritative --no-dev \
     && php artisan package:discover --ansi \
+    && php artisan wayfinder:generate --with-form -vvv \
     && npm run build \
     && rm .env \
     && rm -rf node_modules
