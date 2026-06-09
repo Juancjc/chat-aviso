@@ -1,6 +1,6 @@
 services:
   app:
-    image: chat-aviso:local
+    image: sinaliza-chat-aviso:local
     environment:
       REVERB_APP_KEY: ${REVERB_APP_KEY:-chat-aviso-key}
     build:
