@@ -156,7 +156,7 @@ flowchart LR
 
 ```bash
 git clone <url-do-repositorio>
-cd chat-aviso
+cd sinaliza-chat-aviso
 
 composer install
 npm install
@@ -197,10 +197,10 @@ O projeto inclui uma stack pronta para produção com:
 
 ### Deploy pelo link do Git no Portainer
 
-1. Publique as alterações na branch `master` ou `main`. O GitHub Actions criará `ghcr.io/juancjc/chat-aviso:latest`.
-2. Na primeira publicação, deixe o pacote `chat-aviso` público no GitHub Packages ou cadastre o GHCR como registry no Portainer.
+1. Publique as alterações na branch `master` ou `main`. O GitHub Actions criará `ghcr.io/juancjc/sinaliza-chat-avisoo:latest`.
+2. Na primeira publicação, deixe o pacote `sinaliza-chat-aviso` público no GitHub Packages ou cadastre o GHCR como registry no Portainer.
 3. No Portainer, abra **Stacks → Add stack → Git repository**.
-4. Use o repositório `https://github.com/Juancjc/chat-aviso`.
+4. Use o repositório `https://github.com/Juancjc/sinaliza-chat-aviso`.
 5. Informe `docker-compose.yml` como caminho do Compose.
 6. Configure pelo menos `APP_URL` e `DB_PASSWORD`. O arquivo [`portainer.env.example`](portainer.env.example) contém todas as opções recomendadas.
 7. Clique em **Deploy the stack**.
@@ -236,8 +236,8 @@ reverb     servidor WebSocket Laravel Reverb
 Para inspecionar os processos:
 
 ```bash
-docker exec -it chat-aviso-app-1 pm2 list
-docker logs -f chat-aviso-app-1
+docker exec -it sinaliza-chat-aviso-app-1 pm2 list
+docker logs -f sinaliza-chat-aviso-app-1
 ```
 
 ## ⚡ Mensagens em tempo real

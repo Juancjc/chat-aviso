@@ -21,7 +21,7 @@ services:
       DB_PORT: 5432
       DB_DATABASE: ${DB_DATABASE:-chat_aviso}
       DB_USERNAME: ${DB_USERNAME:-chat_aviso}
-      DB_PASSWORD: ${DB_PASSWORD:-chat-aviso-change-me}
+      DB_PASSWORD: ${DB_PASSWORD:-sinaliza-chat-aviso-change-me}
       CACHE_STORE: redis
       SESSION_DRIVER: redis
       SESSION_SECURE_COOKIE: ${SESSION_SECURE_COOKIE:-false}
@@ -35,8 +35,8 @@ services:
       REDIS_HOST: redis
       REDIS_PORT: 6379
       BROADCAST_CONNECTION: reverb
-      REVERB_APP_ID: chat-aviso
-      REVERB_APP_KEY: chat-aviso-key
+      REVERB_APP_ID: sinaliza-chat-aviso
+      REVERB_APP_KEY: sinaliza-chat-aviso-key
       REVERB_APP_SECRET: ${REVERB_APP_SECRET:-}
       REVERB_HOST: 127.0.0.1
       REVERB_PORT: 8080
@@ -67,7 +67,7 @@ services:
     environment:
       POSTGRES_DB: ${DB_DATABASE:-chat_aviso}
       POSTGRES_USER: ${DB_USERNAME:-chat_aviso}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-chat-aviso-change-me}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-sinaliza-chat-aviso-change-me}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:

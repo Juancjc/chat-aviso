@@ -2,9 +2,9 @@ services:
   app:
     image: sinaliza-chat-aviso:local
     environment:
-      REVERB_APP_KEY: ${REVERB_APP_KEY:-chat-aviso-key}
+      REVERB_APP_KEY: ${REVERB_APP_KEY:-sinaliza-chat-aviso-key}
     build:
       context: .
       dockerfile: Dockerfile
       args:
-        VITE_REVERB_APP_KEY: ${REVERB_APP_KEY:-chat-aviso-key}
+        VITE_REVERB_APP_KEY: ${REVERB_APP_KEY:-sinaliza-chat-aviso-key}

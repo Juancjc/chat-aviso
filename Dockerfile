@@ -41,7 +41,7 @@ WORKDIR /var/www/html
 
 FROM php-base AS build
 
-ARG VITE_REVERB_APP_KEY=chat-aviso-key
+ARG VITE_REVERB_APP_KEY=sinaliza-chat-aviso-key
 ENV VITE_REVERB_APP_KEY=${VITE_REVERB_APP_KEY}
 
 COPY composer.json composer.lock ./
@@ -71,12 +71,12 @@ ENV APP_ENV=production \
 
 COPY --from=build --chown=www-data:www-data /var/www/html /var/www/html
 COPY docker/nginx.conf /etc/nginx/nginx.conf
-COPY docker/php.ini /usr/local/etc/php/conf.d/99-chat-aviso.ini
-COPY docker/php-fpm.conf /usr/local/etc/php-fpm.d/zz-chat-aviso.conf
+COPY docker/php.ini /usr/local/etc/php/conf.d/99-sinaliza-chat-aviso.ini
+COPY docker/php-fpm.conf /usr/local/etc/php-fpm.d/zz-sinaliza-chat-aviso.conf
 COPY docker/ecosystem.config.cjs /etc/pm2/ecosystem.config.cjs
-COPY docker/entrypoint.sh /usr/local/bin/chat-aviso-entrypoint
+COPY docker/entrypoint.sh /usr/local/bin/sinaliza-chat-aviso-entrypoint
 
-RUN chmod +x /usr/local/bin/chat-aviso-entrypoint \
+RUN chmod +x /usr/local/bin/sinaliza-chat-aviso-entrypoint \
     && mkdir -p /run/nginx \
     && chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
@@ -85,5 +85,5 @@ EXPOSE 80
 HEALTHCHECK --interval=30s --timeout=5s --start-period=45s --retries=3 \
     CMD curl --fail --silent http://127.0.0.1/up > /dev/null || exit 1
 
-ENTRYPOINT ["chat-aviso-entrypoint"]
+ENTRYPOINT ["sinaliza-chat-aviso-entrypoint"]
 CMD ["pm2-runtime", "/etc/pm2/ecosystem.config.cjs"]
