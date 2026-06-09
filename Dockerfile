@@ -58,6 +58,7 @@ RUN npm ci
 COPY . .
 
 RUN cp .env.example .env \
+    && mkdir -p storage/framework/cache storage/framework/sessions storage/framework/views bootstrap/cache \
     && php artisan key:generate --force \
     && composer dump-autoload --classmap-authoritative --no-dev \
     && php artisan package:discover --ansi \
