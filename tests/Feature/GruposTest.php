@@ -2,6 +2,7 @@
 
 use App\Mail\AvisoGrupoMail;
 use App\Models\Grupo;
+use App\Models\GrupoConvite;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
@@ -95,6 +96,92 @@ test('somente o admin criador pode adicionar alunos', function () {
     $this->actingAs($admin)
         ->post(route('grupos.participantes.store', $grupo), ['user_id' => $aluno->id])
         ->assertSessionHasErrors('user_id');
+});
+
+test('admin criador pode gerar link temporário e um novo link revoga o anterior', function () {
+    $admin = User::factory()->admin()->create();
+    $outroAdmin = User::factory()->admin()->create();
+    $grupo = $admin->gruposCriados()->create(['nome' => 'Grupo']);
+
+    $this->actingAs($outroAdmin)
+        ->post(route('grupos.convites.store', $grupo), ['duracao_horas' => 24])
+        ->assertForbidden();
+
+    $this->actingAs($admin)
+        ->post(route('grupos.convites.store', $grupo), ['duracao_horas' => 24])
+        ->assertRedirect();
+
+    $primeiroConvite = GrupoConvite::first();
+
+    expect($primeiroConvite)
+        ->not->toBeNull()
+        ->and($primeiroConvite->expires_at->isFuture())->toBeTrue()
+        ->and($primeiroConvite->isValid())->toBeTrue();
+
+    $this->actingAs($admin)
+        ->post(route('grupos.convites.store', $grupo), ['duracao_horas' => 72])
+        ->assertRedirect();
+
+    expect($primeiroConvite->fresh()->revoked_at)->not->toBeNull()
+        ->and($grupo->convites()->valid()->count())->toBe(1);
+});
+
+test('aluno pode entrar no grupo usando link temporário válido', function () {
+    $admin = User::factory()->admin()->create();
+    $aluno = User::factory()->aluno()->create();
+    $grupo = $admin->gruposCriados()->create(['nome' => 'Grupo']);
+    $convite = $grupo->convites()->create([
+        'user_id' => $admin->id,
+        'token' => str_repeat('a', 64),
+        'expires_at' => now()->addHour(),
+    ]);
+
+    $this->get(route('grupos.convites.show', $convite))
+        ->assertOk()
+        ->assertSessionHas('url.intended', route('grupos.convites.show', $convite));
+
+    $this->post(route('grupos.convites.accept', $convite))
+        ->assertRedirect(route('login'));
+
+    $this->post(route('login.store'), [
+        'email' => $aluno->email,
+        'password' => 'password',
+    ])->assertRedirect(route('grupos.convites.show', $convite));
+
+    $this->get(route('grupos.convites.show', $convite))
+        ->assertOk();
+
+    $this->post(route('grupos.convites.accept', $convite))
+        ->assertRedirect(route('grupos.chat', $grupo));
+
+    expect($grupo->participantes()->whereKey($aluno->id)->exists())->toBeTrue();
+});
+
+test('convite expirado não permite entrada e admin não pode aceitar convite', function () {
+    $admin = User::factory()->admin()->create();
+    $outroAdmin = User::factory()->admin()->create();
+    $aluno = User::factory()->aluno()->create();
+    $grupo = $admin->gruposCriados()->create(['nome' => 'Grupo']);
+    $conviteValido = $grupo->convites()->create([
+        'user_id' => $admin->id,
+        'token' => str_repeat('b', 64),
+        'expires_at' => now()->addHour(),
+    ]);
+    $conviteExpirado = $grupo->convites()->create([
+        'user_id' => $admin->id,
+        'token' => str_repeat('c', 64),
+        'expires_at' => now()->subMinute(),
+    ]);
+
+    $this->actingAs($outroAdmin)
+        ->post(route('grupos.convites.accept', $conviteValido))
+        ->assertForbidden();
+
+    $this->actingAs($aluno)
+        ->post(route('grupos.convites.accept', $conviteExpirado))
+        ->assertStatus(410);
+
+    expect($grupo->participantes()->whereKey($aluno->id)->exists())->toBeFalse();
 });
 
 test('admin salva aviso e envia email aos alunos do grupo', function () {

@@ -16,8 +16,15 @@ class GrupoParticipanteController extends Controller
     {
         Gate::authorize('manageParticipants', $grupo);
 
+        $conviteAtivo = $grupo->convites()->valid()->latest()->first();
+
         return Inertia::render('grupos/Participantes', [
             'grupo' => $grupo->only('id', 'nome', 'descricao'),
+            'conviteAtivo' => $conviteAtivo ? [
+                'token' => $conviteAtivo->token,
+                'url' => route('grupos.convites.show', $conviteAtivo),
+                'expires_at' => $conviteAtivo->expires_at,
+            ] : null,
             'participantes' => $grupo->participantes()
                 ->select('users.id', 'users.name', 'users.email')
                 ->orderBy('users.name')

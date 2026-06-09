@@ -44,6 +44,11 @@ class User extends Authenticatable implements PasskeyUser
         return $this->hasMany(Aviso::class);
     }
 
+    public function convitesCriados(): HasMany
+    {
+        return $this->hasMany(GrupoConvite::class);
+    }
+
     public function isAdmin(): bool
     {
         return $this->tipo_usuario === 'admin';

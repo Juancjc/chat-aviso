@@ -39,4 +39,9 @@ class Grupo extends Model
     {
         return $this->hasMany(Aviso::class);
     }
+
+    public function convites(): HasMany
+    {
+        return $this->hasMany(GrupoConvite::class);
+    }
 }
