@@ -1,4 +1,4 @@
-name: chat-aviso
+name: sinaliza-chat-aviso
 
 services:
   app:
