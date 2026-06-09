@@ -57,9 +57,12 @@ RUN npm ci
 
 COPY . .
 
-RUN composer dump-autoload --classmap-authoritative --no-dev \
+RUN cp .env.example .env \
+    && php artisan key:generate --force \
+    && composer dump-autoload --classmap-authoritative --no-dev \
     && php artisan package:discover --ansi \
     && npm run build \
+    && rm .env \
     && rm -rf node_modules
 
 FROM php-base AS production
