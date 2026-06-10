@@ -2,7 +2,8 @@ name: sinaliza-chat-aviso
 
 services:
   app:
-    image: ${APP_IMAGE:-ghcr.io/juancjc/sinaliza-chat-aviso:latest}
+    image: ghcr.io/juancjc/sinaliza-chat-aviso:latest
+    pull_policy: always
     restart: unless-stopped
     ports:
       - "${APP_PORT:-5488}:80"
