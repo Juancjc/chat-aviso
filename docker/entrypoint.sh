@@ -37,10 +37,17 @@ wait_for_database() {
     attempts=0
 
     until php -r '
-        $driver = getenv("DB_CONNECTION") ?: "pgsql";
-        $host = getenv("DB_HOST") ?: "database";
+        $driver = getenv("DB_CONNECTION") ?: "sqlite";
+        $database = getenv("DB_DATABASE") ?: "/var/www/html/storage/app/database.sqlite";
+
+        if ($driver === "sqlite") {
+            touch($database);
+            new PDO("sqlite:$database");
+            exit(0);
+        }
+
+        $host = getenv("DB_HOST") ?: "postgres";
         $port = getenv("DB_PORT") ?: "5432";
-        $database = getenv("DB_DATABASE") ?: "chat_aviso";
         $username = getenv("DB_USERNAME") ?: "chat_aviso";
         $password = getenv("DB_PASSWORD") ?: "";
         new PDO("$driver:host=$host;port=$port;dbname=$database", $username, $password);

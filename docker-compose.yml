@@ -16,12 +16,12 @@ services:
       APP_FALLBACK_LOCALE: ${APP_FALLBACK_LOCALE:-pt_BR}
       LOG_CHANNEL: stderr
       LOG_LEVEL: ${LOG_LEVEL:-warning}
-      DB_CONNECTION: ${DB_CONNECTION:-pgsql}
-      DB_HOST: ${DB_HOST:?Configure DB_HOST no Portainer}
+      DB_CONNECTION: ${DB_CONNECTION:-sqlite}
+      DB_HOST: ${DB_HOST:-}
       DB_PORT: ${DB_PORT:-5432}
-      DB_DATABASE: ${DB_DATABASE:?Configure DB_DATABASE no Portainer}
-      DB_USERNAME: ${DB_USERNAME:?Configure DB_USERNAME no Portainer}
-      DB_PASSWORD: ${DB_PASSWORD:?Configure DB_PASSWORD no Portainer}
+      DB_DATABASE: ${DB_DATABASE:-/var/www/html/storage/app/database.sqlite}
+      DB_USERNAME: ${DB_USERNAME:-chat_aviso}
+      DB_PASSWORD: ${DB_PASSWORD:-chat_aviso}
       DB_SSLMODE: ${DB_SSLMODE:-prefer}
       CACHE_STORE: redis
       SESSION_DRIVER: redis

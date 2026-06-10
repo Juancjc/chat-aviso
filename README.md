@@ -192,7 +192,7 @@ O projeto inclui uma stack pronta para produção com:
 - **PM2 Runtime** supervisionando Nginx, PHP-FPM, workers da fila, scheduler e Reverb.
 - **Laravel Reverb** atrás do mesmo domínio e porta da aplicação.
 - **Redis** para filas, cache e sessões.
-- Conexão com um **PostgreSQL existente** configurado por variáveis de ambiente.
+- **SQLite persistente** por padrão ou conexão com um **PostgreSQL existente** por variáveis de ambiente.
 - Migrações, cache de produção e chaves internas preparados automaticamente ao iniciar.
 
 ### Deploy pelo link do Git no Portainer
@@ -202,7 +202,7 @@ O projeto inclui uma stack pronta para produção com:
 3. No Portainer, abra **Stacks → Add stack → Git repository**.
 4. Use o repositório `https://github.com/Juancjc/sinaliza-chat-aviso`.
 5. Informe `docker-compose.yml` como caminho do Compose.
-6. Configure `APP_URL`, `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME` e `DB_PASSWORD`. O arquivo [`portainer.env.example`](portainer.env.example) contém todas as opções recomendadas.
+6. Opcionalmente, configure `APP_URL`, `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME` e `DB_PASSWORD`. O arquivo [`portainer.env.example`](portainer.env.example) contém todas as opções recomendadas.
 7. Clique em **Deploy the stack**.
 
 A aplicação ficará disponível na porta `APP_PORT`, que por padrão é `8081`. Para HTTPS, aponte seu proxy reverso para essa porta e defina:
@@ -231,7 +231,8 @@ O WebSocket usa automaticamente o mesmo domínio e protocolo aberto no navegador
 > [!IMPORTANT]
 > A stack não cria um PostgreSQL. `DB_HOST` deve apontar para um endereço acessível pelo
 > container da aplicação. Se o PostgreSQL estiver em outra stack Docker, publique sua porta
-> no servidor ou conecte as duas stacks a uma rede Docker compartilhada.
+> no servidor ou conecte as duas stacks a uma rede Docker compartilhada. Sem variáveis de
+> banco, a aplicação inicia com SQLite persistido no volume `app_storage`.
 
 ### Construir localmente
 
