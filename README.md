@@ -205,7 +205,7 @@ O projeto inclui uma stack pronta para produção com:
 6. Configure pelo menos `APP_URL` e `DB_PASSWORD`. O arquivo [`portainer.env.example`](portainer.env.example) contém todas as opções recomendadas.
 7. Clique em **Deploy the stack**.
 
-A aplicação ficará disponível na porta `APP_PORT`, que por padrão é `8080`. Para HTTPS, aponte seu proxy reverso para essa porta e defina:
+A aplicação ficará disponível na porta `APP_PORT`, que por padrão é `8081`. Para HTTPS, aponte seu proxy reverso para essa porta e defina:
 
 ```env
 APP_URL=https://chat.seudominio.com
