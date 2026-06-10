@@ -58,7 +58,7 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::resetPasswordView(fn (Request $request) => Inertia::render('auth/ResetPassword', [
             'email' => $request->email,
             'token' => $request->route('token'),
-            'passwordRules' => Password::defaults()->toPasswordRulesString().' maxlength: 9;',
+            'passwordRules' => Password::defaults()->toPasswordRulesString(),
         ]));
 
         Fortify::requestPasswordResetLinkView(fn (Request $request) => Inertia::render('auth/ForgotPassword', [
@@ -70,8 +70,8 @@ class FortifyServiceProvider extends ServiceProvider
         ]));
 
         Fortify::registerView(fn () => Inertia::render('auth/Register', [
-            'passwordRules' => Password::defaults()->toPasswordRulesString().' maxlength: 9;',
-            'passwordHint' => 'Use uma senha com 8 ou 9 caracteres.',
+            'passwordRules' => Password::defaults()->toPasswordRulesString(),
+            'passwordHint' => 'Use uma senha com no mínimo 8 caracteres e um caractere especial.',
         ]));
 
         Fortify::twoFactorChallengeView(fn () => Inertia::render('auth/TwoFactorChallenge'));

@@ -24,8 +24,8 @@ test('new users can register', function () {
         'name' => 'Test User',
         'email' => 'test@example.com',
         'avatar_emoji' => '👨🏿‍💻',
-        'password' => 'password',
-        'password_confirmation' => 'password',
+        'password' => 'password!',
+        'password_confirmation' => 'password!',
     ]);
 
     $this->assertAuthenticated();
@@ -35,13 +35,37 @@ test('new users can register', function () {
     expect(auth()->user()->avatar_emoji)->toBe('👨🏿‍💻');
 });
 
-test('registration rejects passwords longer than nine characters', function () {
+test('registration accepts passwords longer than nine characters', function () {
     $this->post(route('register.store'), [
         'name' => 'Test User',
         'email' => 'test@example.com',
         'avatar_emoji' => '🙂',
-        'password' => '1234567890',
-        'password_confirmation' => '1234567890',
+        'password' => 'long-password!',
+        'password_confirmation' => 'long-password!',
+    ])->assertSessionHasNoErrors();
+
+    $this->assertAuthenticated();
+});
+
+test('registration rejects passwords shorter than eight characters', function () {
+    $this->post(route('register.store'), [
+        'name' => 'Test User',
+        'email' => 'test@example.com',
+        'avatar_emoji' => '🙂',
+        'password' => 'short!',
+        'password_confirmation' => 'short!',
+    ])->assertSessionHasErrors('password');
+
+    $this->assertGuest();
+});
+
+test('registration rejects passwords without a special character', function () {
+    $this->post(route('register.store'), [
+        'name' => 'Test User',
+        'email' => 'test@example.com',
+        'avatar_emoji' => '🙂',
+        'password' => 'password',
+        'password_confirmation' => 'password',
     ])->assertSessionHasErrors('password');
 
     $this->assertGuest();
@@ -52,8 +76,8 @@ test('registration rejects text instead of emoji avatar', function () {
         'name' => 'Test User',
         'email' => 'test@example.com',
         'avatar_emoji' => 'avatar',
-        'password' => 'password',
-        'password_confirmation' => 'password',
+        'password' => 'password!',
+        'password_confirmation' => 'password!',
     ])->assertSessionHasErrors('avatar_emoji');
 
     $this->assertGuest();

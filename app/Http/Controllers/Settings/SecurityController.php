@@ -37,7 +37,7 @@ class SecurityController extends Controller
                     ->values()
                     ->all()
                 : [],
-            'passwordRules' => Password::defaults()->toPasswordRulesString().' maxlength: 9;',
+            'passwordRules' => Password::defaults()->toPasswordRulesString(),
         ];
 
         if (Features::canManageTwoFactorAuthentication()) {
