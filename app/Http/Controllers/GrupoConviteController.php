@@ -75,6 +75,6 @@ class GrupoConviteController extends Controller
 
         Inertia::flash('toast', ['type' => 'success', 'message' => 'Você entrou no grupo.']);
 
-        return redirect(route('grupos.chat', $convite->grupo, absolute: false));
+        return redirect()->away(route('grupos.chat', $convite->grupo, absolute: false));
     }
 }

@@ -21,6 +21,7 @@ test('admin pode criar e gerenciar seu grupo', function () {
     $admin = User::factory()->admin()->create();
 
     $response = $this->actingAs($admin)
+        ->withHeader('X-Inertia', 'true')
         ->post(route('grupos.store'), [
             'nome' => 'Grupo de Teste',
             'descricao' => 'Descrição do grupo',

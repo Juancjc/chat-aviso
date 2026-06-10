@@ -40,7 +40,7 @@ class ProfileController extends Controller
 
         Inertia::flash('toast', ['type' => 'success', 'message' => __('Profile updated.')]);
 
-        return redirect(route('profile.edit', absolute: false));
+        return redirect()->away(route('profile.edit', absolute: false));
     }
 
     /**
@@ -59,6 +59,6 @@ class ProfileController extends Controller
 
         Inertia::flash('toast', ['type' => 'success', 'message' => 'Conta excluída com sucesso.']);
 
-        return redirect('/');
+        return redirect()->away('/');
     }
 }

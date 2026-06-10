@@ -18,6 +18,8 @@ class RegisterResponse implements RegisterResponseContract
 
         Inertia::flash('toast', ['type' => 'success', 'message' => 'Conta criada com sucesso.']);
 
-        return redirect()->intended(Fortify::redirects('register'));
+        $location = $request->session()->pull('url.intended', Fortify::redirects('register'));
+
+        return redirect()->away($location);
     }
 }

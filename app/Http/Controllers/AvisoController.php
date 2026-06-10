@@ -51,6 +51,6 @@ class AvisoController extends Controller
             'message' => "Aviso enviado para {$alunos->count()} aluno(s).",
         ]);
 
-        return redirect(route('dashboard', absolute: false));
+        return redirect()->away(route('dashboard', absolute: false));
     }
 }

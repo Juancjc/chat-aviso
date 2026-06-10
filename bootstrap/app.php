@@ -20,12 +20,14 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->trustProxies(at: '127.0.0.1');
         $middleware->encryptCookies(except: ['appearance', 'sidebar_state']);
 
-        $middleware->web(append: [
-            HandleAppearance::class,
-            HandleInertiaRequests::class,
-            AddLinkHeadersForPreloadedAssets::class,
-            PreserveRequestOrigin::class,
-        ]);
+        $middleware->web(
+            append: [
+                HandleAppearance::class,
+                HandleInertiaRequests::class,
+                AddLinkHeadersForPreloadedAssets::class,
+            ],
+            prepend: [PreserveRequestOrigin::class],
+        );
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

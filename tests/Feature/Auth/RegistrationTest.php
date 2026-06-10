@@ -20,7 +20,7 @@ test('registration screen can be rendered', function () {
 test('new users can register', function () {
     config(['app.url' => 'http://wrong-host']);
 
-    $response = $this->post(route('register.store'), [
+    $response = $this->withHeader('X-Inertia', 'true')->post(route('register.store'), [
         'name' => 'Test User',
         'email' => 'test@example.com',
         'avatar_emoji' => '👨🏿‍💻',
