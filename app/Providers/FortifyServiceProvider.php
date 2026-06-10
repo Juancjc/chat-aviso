@@ -69,6 +69,9 @@ class FortifyServiceProvider extends ServiceProvider
 
         Fortify::registerView(fn () => Inertia::render('auth/Register', [
             'passwordRules' => Password::defaults()->toPasswordRulesString(),
+            'passwordHint' => app()->isProduction()
+                ? 'Use pelo menos 12 caracteres, incluindo letra maiúscula, minúscula, número e símbolo.'
+                : 'Use pelo menos 8 caracteres.',
         ]));
 
         Fortify::twoFactorChallengeView(fn () => Inertia::render('auth/TwoFactorChallenge'));

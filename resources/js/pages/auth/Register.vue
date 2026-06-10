@@ -14,6 +14,7 @@ import { store } from '@/routes/register';
 
 defineProps<{
     passwordRules: string;
+    passwordHint: string;
 }>();
 
 defineOptions({
@@ -86,6 +87,9 @@ const avatarEmoji = ref('🙂');
                     placeholder="Password"
                     :passwordrules="passwordRules"
                 />
+                <p class="text-xs text-muted-foreground">
+                    {{ passwordHint }}
+                </p>
                 <InputError :message="errors.password" />
             </div>
 

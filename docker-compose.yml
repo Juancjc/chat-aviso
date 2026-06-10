@@ -14,7 +14,7 @@ services:
       APP_DEBUG: "false"
       APP_URL: ${APP_URL:-http://localhost:5488}
       APP_LOCALE: ${APP_LOCALE:-pt_BR}
-      APP_FALLBACK_LOCALE: ${APP_FALLBACK_LOCALE:-pt_BR}
+      APP_FALLBACK_LOCALE: ${APP_FALLBACK_LOCALE:-en}
       LOG_CHANNEL: stderr
       LOG_LEVEL: ${LOG_LEVEL:-warning}
       DB_CONNECTION: ${DB_CONNECTION:-sqlite}
