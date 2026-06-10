@@ -13,6 +13,7 @@ import Button from 'primevue/button';
 import Card from 'primevue/card';
 import Tag from 'primevue/tag';
 import { computed } from 'vue';
+import { useAppConfirm } from '@/composables/useAppConfirm';
 
 type Grupo = {
     id: number;
@@ -34,11 +35,15 @@ defineOptions({
 const page = usePage();
 const user = computed(() => page.props.auth.user);
 const isAdmin = computed(() => user.value.tipo_usuario === 'admin');
+const { confirmDestructive } = useAppConfirm();
 
 const excluirGrupo = (grupo: Grupo) => {
-    if (window.confirm(`Excluir o grupo "${grupo.nome}"?`)) {
-        router.delete(`/grupos/${grupo.id}`);
-    }
+    confirmDestructive({
+        header: 'Excluir grupo?',
+        message: `O grupo "${grupo.nome}" e todo o seu histórico serão excluídos permanentemente.`,
+        acceptLabel: 'Excluir grupo',
+        accept: () => router.delete(`/grupos/${grupo.id}`),
+    });
 };
 </script>
 

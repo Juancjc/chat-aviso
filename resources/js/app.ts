@@ -2,6 +2,7 @@ import { createInertiaApp } from '@inertiajs/vue3';
 import { configureEcho } from '@laravel/echo-vue';
 import Aura from '@primeuix/themes/aura';
 import PrimeVue from 'primevue/config';
+import ConfirmationService from 'primevue/confirmationservice';
 import ToastService from 'primevue/toastservice';
 import Tooltip from 'primevue/tooltip';
 import { initializeTheme } from '@/composables/useAppearance';
@@ -57,6 +58,7 @@ createInertiaApp({
                 preset: Aura,
             },
         });
+        app.use(ConfirmationService);
         app.use(ToastService);
         app.directive('tooltip', Tooltip);
 

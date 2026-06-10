@@ -20,6 +20,7 @@ import Message from 'primevue/message';
 import Select from 'primevue/select';
 import { computed, ref } from 'vue';
 import InputError from '@/components/InputError.vue';
+import { useAppConfirm } from '@/composables/useAppConfirm';
 
 type Aluno = {
     id: number;
@@ -45,6 +46,7 @@ const props = defineProps<{
 const participanteForm = useForm<{ user_id: number | null }>({ user_id: null });
 const conviteForm = useForm({ duracao_horas: 24 });
 const copiado = ref(false);
+const { confirmDestructive } = useAppConfirm();
 const conviteUrl = computed(() => {
     if (!props.conviteAtivo) {
         return '';
@@ -90,19 +92,33 @@ const revogarConvite = () => {
         return;
     }
 
-    router.delete(
-        `/grupos/${props.grupo.id}/convites/${props.conviteAtivo.token}`,
-        { preserveScroll: true },
-    );
+    const token = props.conviteAtivo.token;
+
+    confirmDestructive({
+        header: 'Revogar link de convite?',
+        message:
+            'O link atual deixará de funcionar imediatamente. Participantes que já entraram não serão removidos.',
+        acceptLabel: 'Revogar link',
+        accept: () =>
+            router.delete(
+                `/grupos/${props.grupo.id}/convites/${token}`,
+                { preserveScroll: true },
+            ),
+    });
 };
 
 const removerParticipante = (aluno: Aluno) => {
-    if (!window.confirm(`Remover ${aluno.name} deste grupo?`)) {
-        return;
-    }
-
-    router.delete(`/grupos/${props.grupo.id}/participantes/${aluno.id}`, {
-        preserveScroll: true,
+    confirmDestructive({
+        header: 'Remover participante?',
+        message: `${aluno.name} perderá o acesso ao grupo "${props.grupo.nome}" e ao seu chat.`,
+        acceptLabel: 'Remover participante',
+        accept: () =>
+            router.delete(
+                `/grupos/${props.grupo.id}/participantes/${aluno.id}`,
+                {
+                    preserveScroll: true,
+                },
+            ),
     });
 };
 
