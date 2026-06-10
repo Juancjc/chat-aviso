@@ -26,7 +26,11 @@ if (typeof window !== 'undefined') {
     });
 }
 
-const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+const configuredAppName = import.meta.env.VITE_APP_NAME;
+const appName =
+    configuredAppName && configuredAppName !== 'Laravel'
+        ? configuredAppName
+        : 'Sinaliza';
 
 createInertiaApp({
     title: (title) => (title ? `${title} - ${appName}` : appName),
