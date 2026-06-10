@@ -64,7 +64,8 @@ test('user can delete their account', function () {
 
     $response
         ->assertSessionHasNoErrors()
-        ->assertRedirect(route('home'));
+        ->assertRedirect(route('home'))
+        ->assertInertiaFlash('toast.message', 'Conta excluída com sucesso.');
 
     $this->assertGuest();
     expect($user->fresh())->toBeNull();

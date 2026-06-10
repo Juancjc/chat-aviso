@@ -5,6 +5,7 @@ import Button from 'primevue/button';
 import Card from 'primevue/card';
 import Message from 'primevue/message';
 import { computed } from 'vue';
+import AppToast from '@/components/AppToast.vue';
 
 const props = defineProps<{
     convite: {
@@ -35,6 +36,7 @@ const formatarExpiracao = (date: string) =>
 
 <template>
     <Head :title="`Convite - ${convite.grupo.nome}`" />
+    <AppToast />
 
     <header class="border-b border-border bg-background">
         <div

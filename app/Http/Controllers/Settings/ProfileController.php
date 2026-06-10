@@ -57,6 +57,8 @@ class ProfileController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
+        Inertia::flash('toast', ['type' => 'success', 'message' => 'Conta excluída com sucesso.']);
+
         return redirect('/');
     }
 }

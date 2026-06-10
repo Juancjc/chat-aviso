@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
 import AppLogoIcon from '@/components/AppLogoIcon.vue';
+import AppToast from '@/components/AppToast.vue';
 import { home } from '@/routes';
 
 defineProps<{
@@ -39,5 +40,6 @@ defineProps<{
                 <slot />
             </div>
         </div>
+        <AppToast />
     </div>
 </template>

@@ -2,8 +2,8 @@
 import AppContent from '@/components/AppContent.vue';
 import AppHeader from '@/components/AppHeader.vue';
 import AppShell from '@/components/AppShell.vue';
+import AppToast from '@/components/AppToast.vue';
 import RealtimeMessages from '@/components/RealtimeMessages.vue';
-import { Toaster } from '@/components/ui/sonner';
 import type { BreadcrumbItem } from '@/types';
 
 type Props = {
@@ -22,6 +22,6 @@ withDefaults(defineProps<Props>(), {
             <slot />
         </AppContent>
         <RealtimeMessages />
-        <Toaster />
+        <AppToast />
     </AppShell>
 </template>

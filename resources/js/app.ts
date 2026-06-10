@@ -55,13 +55,14 @@ createInertiaApp({
         });
         app.use(ToastService);
         app.directive('tooltip', Tooltip);
+
+        if (typeof window !== 'undefined') {
+            initializeFlashToast(app.config.globalProperties.$toast);
+        }
     },
 });
 
 if (typeof window !== 'undefined') {
     // This will set light / dark mode on page load...
     initializeTheme();
-
-    // This will listen for flash toast data from the server...
-    initializeFlashToast();
 }
