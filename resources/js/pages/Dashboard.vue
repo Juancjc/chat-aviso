@@ -9,11 +9,13 @@ import {
     UserRoundPlus,
     Users,
 } from '@lucide/vue';
+import Badge from 'primevue/badge';
 import Button from 'primevue/button';
 import Card from 'primevue/card';
 import Tag from 'primevue/tag';
 import { computed } from 'vue';
 import { useAppConfirm } from '@/composables/useAppConfirm';
+import { useUnreadNotifications } from '@/composables/useUnreadNotifications';
 
 type Grupo = {
     id: number;
@@ -36,6 +38,7 @@ const page = usePage();
 const user = computed(() => page.props.auth.user);
 const isAdmin = computed(() => user.value.tipo_usuario === 'admin');
 const { confirmDestructive } = useAppConfirm();
+const { unreadCountByGroup } = useUnreadNotifications();
 
 const excluirGrupo = (grupo: Grupo) => {
     confirmDestructive({
@@ -116,9 +119,14 @@ const excluirGrupo = (grupo: Grupo) => {
                     <template #title>
                         <div class="flex items-start justify-between gap-3">
                             <span class="line-clamp-1">{{ grupo.nome }}</span>
-                            <MessageCircle
-                                class="size-5 shrink-0 text-blue-600"
-                            />
+                            <div class="flex shrink-0 items-center gap-2">
+                                <Badge
+                                    v-if="unreadCountByGroup[grupo.id]"
+                                    :value="unreadCountByGroup[grupo.id]"
+                                    severity="danger"
+                                />
+                                <MessageCircle class="size-5 text-blue-600" />
+                            </div>
                         </div>
                     </template>
                     <template #subtitle>

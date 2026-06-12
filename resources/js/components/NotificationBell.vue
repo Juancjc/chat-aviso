@@ -6,22 +6,14 @@ import Avatar from 'primevue/avatar';
 import PrimeButton from 'primevue/button';
 import Dialog from 'primevue/dialog';
 import Popover from 'primevue/popover';
-import {
-    computed,
-    nextTick,
-    onBeforeUnmount,
-    onMounted,
-    ref,
-    watch,
-} from 'vue';
+import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue';
 import { Button } from '@/components/ui/button';
+import { useUnreadNotifications } from '@/composables/useUnreadNotifications';
 import type { UnreadNotification } from '@/types/notifications';
 
 const page = usePage();
 const currentUser = computed(() => page.props.auth.user);
-const notifications = ref<UnreadNotification[]>([
-    ...page.props.unreadNotifications,
-]);
+const { unreadNotifications: notifications } = useUnreadNotifications();
 const currentNotice = ref<UnreadNotification | null>(null);
 const popover = ref<{
     hide: () => void;
@@ -127,13 +119,6 @@ useEcho<{ aviso_id: number }>(
     `users.${currentUser.value.id}`,
     '.aviso.enviado',
     refreshNotifications,
-);
-
-watch(
-    () => page.props.unreadNotifications,
-    (items) => {
-        notifications.value = [...items];
-    },
 );
 
 onMounted(() => {

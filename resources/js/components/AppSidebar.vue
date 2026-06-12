@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Link, usePage } from '@inertiajs/vue3';
 import { LayoutGrid, MessagesSquare } from '@lucide/vue';
+import Badge from 'primevue/badge';
 import { computed } from 'vue';
 import AppLogo from '@/components/AppLogo.vue';
 import NavFooter from '@/components/NavFooter.vue';
@@ -18,6 +19,7 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { useCurrentUrl } from '@/composables/useCurrentUrl';
+import { useUnreadNotifications } from '@/composables/useUnreadNotifications';
 import { dashboard } from '@/routes';
 import type { NavItem } from '@/types';
 
@@ -33,6 +35,7 @@ const footerNavItems: NavItem[] = [];
 const page = usePage();
 const sidebarGroups = computed(() => page.props.sidebarGroups);
 const { isCurrentUrl } = useCurrentUrl();
+const { unreadCountByGroup } = useUnreadNotifications();
 </script>
 
 <template>
@@ -69,6 +72,12 @@ const { isCurrentUrl } = useCurrentUrl();
                             <Link :href="`/grupos/${group.id}/chat`">
                                 <MessagesSquare />
                                 <span>{{ group.nome }}</span>
+                                <Badge
+                                    v-if="unreadCountByGroup[group.id]"
+                                    :value="unreadCountByGroup[group.id]"
+                                    severity="danger"
+                                    class="ml-auto"
+                                />
                             </Link>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
