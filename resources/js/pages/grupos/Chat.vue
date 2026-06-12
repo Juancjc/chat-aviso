@@ -12,6 +12,7 @@ import {
     ref,
     watch,
 } from 'vue';
+import ChatEmojiPicker from '@/components/ChatEmojiPicker.vue';
 import InputError from '@/components/InputError.vue';
 import type { RealtimeMessage } from '@/types/realtime';
 
@@ -42,6 +43,7 @@ const page = usePage();
 const currentUser = computed(() => page.props.auth.user);
 const chatMessages = ref<Mensagem[]>([...props.mensagens]);
 const messagesBox = ref<HTMLElement | null>(null);
+const messageInput = ref<{ $el: HTMLTextAreaElement } | null>(null);
 const form = useForm({ mensagem: '' });
 
 const scrollToBottom = async () => {
@@ -53,12 +55,39 @@ const scrollToBottom = async () => {
 };
 
 const enviar = () => {
+    if (form.processing || !form.mensagem.trim()) {
+        return;
+    }
+
     form.post(`/grupos/${props.grupo.id}/mensagens`, {
         preserveScroll: true,
         onSuccess: () => {
             form.reset();
+            nextTick(() => messageInput.value?.$el.focus());
         },
     });
+};
+
+const enviarComEnter = (event: KeyboardEvent) => {
+    if (event.key !== 'Enter' || event.shiftKey || event.isComposing) {
+        return;
+    }
+
+    event.preventDefault();
+    enviar();
+};
+
+const inserirEmoji = async (emoji: string) => {
+    const input = messageInput.value?.$el;
+    const start = input?.selectionStart ?? form.mensagem.length;
+    const end = input?.selectionEnd ?? start;
+
+    form.mensagem =
+        form.mensagem.slice(0, start) + emoji + form.mensagem.slice(end);
+
+    await nextTick();
+    input?.focus();
+    input?.setSelectionRange(start + emoji.length, start + emoji.length);
 };
 
 const receiveMessage = (event: Event) => {
@@ -200,15 +229,20 @@ onBeforeUnmount(() => {
                     </div>
 
                     <form class="flex items-end gap-2" @submit.prevent="enviar">
+                        <ChatEmojiPicker
+                            :disabled="form.processing"
+                            @select="inserirEmoji"
+                        />
                         <div class="flex-1">
                             <Textarea
+                                ref="messageInput"
                                 v-model="form.mensagem"
                                 class="w-full"
                                 rows="2"
                                 maxlength="5000"
                                 auto-resize
                                 placeholder="Digite sua mensagem..."
-                                @keydown.ctrl.enter="enviar"
+                                @keydown="enviarComEnter"
                             />
                             <InputError :message="form.errors.mensagem" />
                         </div>

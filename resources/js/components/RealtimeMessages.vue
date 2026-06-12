@@ -5,12 +5,16 @@ import Avatar from 'primevue/avatar';
 import Button from 'primevue/button';
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
-import { computed } from 'vue';
+import { computed, onBeforeUnmount, onMounted } from 'vue';
 import type { RealtimeMessage } from '@/types/realtime';
 
 const page = usePage();
 const toast = useToast();
 const currentUser = computed(() => page.props.auth.user);
+let originalTitle = '';
+let titleFlashTimer: number | null = null;
+let showUnreadTitle = false;
+
 const openedGroupId = computed(() => {
     const match = page.url.match(/^\/grupos\/(\d+)\/chat/);
 
@@ -20,10 +24,46 @@ const openedGroupId = computed(() => {
 const summarize = (message: string) =>
     message.length > 180 ? `${message.slice(0, 177)}...` : message;
 
+const stopTitleFlash = () => {
+    if (titleFlashTimer === null) {
+        return;
+    }
+
+    window.clearInterval(titleFlashTimer);
+    titleFlashTimer = null;
+    document.title = originalTitle;
+};
+
+const startTitleFlash = () => {
+    if (
+        titleFlashTimer !== null ||
+        (document.visibilityState === 'visible' && document.hasFocus())
+    ) {
+        return;
+    }
+
+    originalTitle = document.title;
+    showUnreadTitle = true;
+    document.title = 'Nova mensagem!';
+
+    titleFlashTimer = window.setInterval(() => {
+        showUnreadTitle = !showUnreadTitle;
+        document.title = showUnreadTitle ? 'Nova mensagem!' : originalTitle;
+    }, 1000);
+};
+
+const handlePageReturn = () => {
+    if (document.visibilityState === 'visible') {
+        stopTitleFlash();
+    }
+};
+
 const handleMessage = (message: RealtimeMessage) => {
     if (message.user.id === currentUser.value.id) {
         return;
     }
+
+    startTitleFlash();
 
     if (openedGroupId.value === message.grupo.id) {
         window.dispatchEvent(
@@ -61,6 +101,17 @@ useEcho<RealtimeMessage>(
     '.mensagem.enviada',
     handleMessage,
 );
+
+onMounted(() => {
+    document.addEventListener('visibilitychange', handlePageReturn);
+    window.addEventListener('focus', stopTitleFlash);
+});
+
+onBeforeUnmount(() => {
+    document.removeEventListener('visibilitychange', handlePageReturn);
+    window.removeEventListener('focus', stopTitleFlash);
+    stopTitleFlash();
+});
 </script>
 
 <template>
